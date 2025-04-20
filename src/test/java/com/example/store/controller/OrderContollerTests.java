@@ -1,14 +1,15 @@
 package com.example.store.controller;
 
-import com.example.store.dto.CustomerDTO;
 import com.example.store.dto.OrderCustomerDTO;
 import com.example.store.dto.OrderDTO;
+import com.example.store.dto.ProductDto;
 import com.example.store.entity.Customer;
 import com.example.store.entity.Order;
+import com.example.store.entity.Product;
 import com.example.store.mapper.CustomerMapper;
 import com.example.store.repository.CustomerRepository;
 import com.example.store.repository.OrderRepository;
-import com.example.store.service.OrderService;
+import com.example.store.service.OrderServiceImp;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,11 +51,13 @@ class OrderControllerTests {
     private Customer customer;
 
     @MockitoBean
-    private OrderService orderService;
+    private OrderServiceImp orderService;
 
     private OrderDTO orderDTO;
 
     private OrderCustomerDTO orderCustomerDTO;
+
+    private ProductDto productDto;
 
     @BeforeEach
     void setUp() {
@@ -63,7 +66,6 @@ class OrderControllerTests {
         customer.setId(1L);
 
         order = new Order();
-        order.setDescription("Test Order");
         order.setId(1L);
         order.setCustomer(customer);
 
@@ -71,9 +73,14 @@ class OrderControllerTests {
         orderCustomerDTO.setName("John Doe");
         orderCustomerDTO.setId(1L);
 
+        productDto = new ProductDto();
+        productDto.setId(1L);
+        productDto.setOrderIdList(List.of(1L,2L));
+        productDto.setDescription("Test Product");
+
         orderDTO = new OrderDTO();
-        orderDTO.setDescription("Test Order");
         orderDTO.setId(1L);
+        orderDTO.setProducts(List.of(productDto));
         orderDTO.setCustomer(orderCustomerDTO);
 
 
@@ -87,19 +94,27 @@ class OrderControllerTests {
 
         mockMvc.perform(post("/order")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(order)))
+                        .content(objectMapper.writeValueAsString(orderDTO)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.description").value("Test Order"))
-                .andExpect(jsonPath("$.customer.name").value("John Doe"));
+                .andExpect(jsonPath("$..id").value(1L));
+    }
+
+    @Test
+    void testGetAllOrders() throws Exception {
+        when(orderRepository.findAll()).thenReturn(List.of(order));
+        when(orderService.getAllOrders(0, 1)).thenReturn(List.of(orderDTO));
+        mockMvc.perform(get("/order").param("pageNumber", "0").param("pageSize", "1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].customer.name").value("John Doe"));
     }
 
     @Test
     void testGetOrder() throws Exception {
-        when(orderRepository.findAll()).thenReturn(List.of(order));
-
-        mockMvc.perform(get("/order"))
-                .andExpect(status().isOk());
-                //.andExpect(jsonPath("$..description").value("Test Order"))
-                //.andExpect(jsonPath("$..customer.name").value("John Doe"));
+        when(orderRepository.findById(1L)).thenReturn(Optional.ofNullable(order));
+        when(orderService.retrieveOrder(1L)).thenReturn(orderDTO);
+        mockMvc.perform(get("/order/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$..products.[0].description").value("Test Product"))
+                .andExpect(jsonPath("$..customer.name").value("John Doe"));
     }
 }

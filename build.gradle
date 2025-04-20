@@ -20,17 +20,17 @@ repositories {
     mavenCentral()
 }
 
-/*spotless {
+spotless {
     java {
         palantirJavaFormat('2.50.0')
                 .style('PALANTIR')
                 .formatJavadoc(false)
-        enforceCheck false
+        enforceCheck true
         importOrder('com', 'jakarta', 'lombok', 'org', '', 'javax|java', '\\#')
         removeUnusedImports()
         formatAnnotations()
     }
-}*/
+}
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -40,6 +40,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
+    implementation 'org.springframework.boot:spring-boot-starter-cache:3.1.5'
     implementation 'org.mapstruct:mapstruct:1.6.2'
     implementation 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.2'

@@ -8,6 +8,7 @@ import com.example.store.repository.OrderProductRepository;
 import com.example.store.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Cacheable("single-products")
     public ProductDto findProductById(Long id) {
         Optional<Product> productOptional = productRepository.findById(id);
 
@@ -54,6 +56,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Cacheable("products")
     public List<ProductDto> retrieveAllProducts(int pageNumber, int pageSize) {
 
         Page<Product> productPage = productRepository.findAll(PageRequest.of(pageNumber, pageSize));

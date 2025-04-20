@@ -19,6 +19,6 @@ for (let i = 1; i <= M; i++) {
 // Generate products
 for (let i = 1; i <= M; i++) {
     const customerId = Math.ceil(Math.random() * N);
-    console.log(`INSERT INTO "product" (id, description)
-                 VALUES (${i}, '${faker.commerce.productName()}');`);
+    console.log(`INSERT INTO product (description)
+                 VALUES ('${faker.commerce.productName()}');`);
 }

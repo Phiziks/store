@@ -3,14 +3,13 @@ package com.example.store.service;
 import com.example.store.dto.OrderDTO;
 import com.example.store.dto.ProductDto;
 import com.example.store.entity.Order;
+import com.example.store.interfaces.OrderService;
 import com.example.store.mapper.OrderMapper;
-import com.example.store.mapper.ProductMapper;
 import com.example.store.repository.OrderProductRepository;
 import com.example.store.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,15 +18,13 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class OrderService implements IOrderService {
+public class OrderServiceImp implements OrderService {
 
     private final OrderRepository orderRepository;
 
     private final OrderMapper orderMapper;
 
     private final OrderProductRepository orderProductRepository;
-
-    private final ProductMapper productMapper;
 
 
     @Override

@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/product")
 @RequiredArgsConstructor
 @Slf4j
 public class ProductController {
 
     private final ProductService productService;
 
-    @GetMapping(value = "/retrieve/v1", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(value = "/v1/retrieve", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ProductDto> retrieveProduct(@RequestParam Long productId) {
 
         log.info("id to retrieve product : {}", productId);
@@ -30,14 +30,14 @@ public class ProductController {
 
     }
 
-    @GetMapping(value = "/get-all/v1", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(value = "/v1/all", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<ProductDto>> retrieveAllProducts(@RequestParam int pageNumber, @RequestParam int pageSize) {
 
-        return new ResponseEntity<>(productService.retrieveAllProducts(pageNumber,pageSize), HttpStatus.OK);
+        return new ResponseEntity<>(productService.retrieveAllProducts(pageNumber, pageSize), HttpStatus.OK);
 
     }
 
-    @PostMapping(value = "/create/v1", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(value = "/v1/create", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<String> createProduct(@RequestBody ProductDto productDto, HttpServletRequest request) {
 
         log.info("received ProductDto to be created: {}", productDto);
